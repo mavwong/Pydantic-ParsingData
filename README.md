@@ -1,4 +1,4 @@
-# Pydantic-ParsingData
+# Pydantic - Parsing Data
 Testing repository - test parsing datas in Pydantic.
 
 ## Getting Started
