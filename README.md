@@ -1,5 +1,6 @@
 # Pydantic - Parsing Data
-Test repository. Parsing and validating datas using Pydantic. The file validates or parses the data before analyzing the datas into Pandas library eventually exporting the data into csv file.
+Test repository. Parsing and validating datas using Pydantic. The file validates incoming datas from JSON, before processing and analyzing the datas, eventually exporting the dataframe into csv file.
+
 ## Getting Started
 ### Deployment
 ```shell
