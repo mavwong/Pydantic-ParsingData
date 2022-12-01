@@ -1,3 +1,4 @@
+import string
 import json
 import pydantic
 
@@ -9,95 +10,69 @@ path_cwd = Path.cwd()
 path_data = path_cwd / "data"
 
 # Existing Files
-file_json = path_cwd / "data.json"
+file_json_a = path_data / "data.json"
+file_json_b = path_data / "test_data_0001.json"
+file_json_c = path_data / "test_data_0002.json"
 
 # Current file to be tested
-current_file = file_json
+current_file = file_json_b
 
-
-class ISBNMissingError(Exception):
-    """ Custom error that is raised when both ISBN10 and ISBN13 are missing. """
-
-    def __init__(self, title: str, message: str) -> None:
-        self.title = title
-        self.message = message
-        super().__init__(message)
-
-class ISBN10FormatError(Exception):
-    """ Custom error that is raised when ISBN10 doesn't have the right format. """
-
-    def __init__(self, value: str, message: str) -> None:
-        self.value = value
-        self.message = message
-        super().__init__(message)
+class User(pydantic.BaseModel):
+    username: str
+    password: str
+    age: int
+    score: float
+    
+    email: Optional[str]
+    phone_number: Optional[str]
+    
+    @pydantic.validator("username")
+    @classmethod
+    def validate_username(cls, value):
+        if any(p in value for p in string.punctuation):
+            raise ValueError("Username must not include punctuation or special characters.")
+        else:
+            return value
         
-
-class Author(pydantic.BaseModel):
-    name: str
-    verified: bool
-
-class Book(pydantic.BaseModel):
-    """ Represents a book with that you can read from a JSON file. """
-    title: str
-    author: str
-    publisher: str
-    price: float
-    isbn_10: Optional[str]
-    isbn_13: Optional[str]
-    subtitle: Optional[str]
-    author2: Optional[Author]
-
-    @pydantic.root_validator(pre=True)
+    @pydantic.validator("password")
     @classmethod
-    def check_isbn_10_or_13(cls, values):
-        """Make sure there is either an isbn_10 or isbn_13 value defined"""
-        if "isbn_10" not in values and "isbn_13" not in values:
-            raise ISBNMissingError(
-                title=values["title"],
-                message="Document should have either an ISBN10 or ISBN13",
-            )
-        return values
-
-    @pydantic.validator("isbn_10")
+    def validate_password(cls, value):
+        if len(value) < 8:
+            raise ValueError("Password must be atleast 8 characters long.")
+        if any(p in value for p in string.punctuation):
+            if any(d in value for d in string.digits):
+                if any(l in value for l in string.ascii_lowercase):
+                    if any(u in value for u in string.ascii_uppercase):
+                        return value
+        raise ValueError("Password needs at least one punctuation symbol, digit, upper and lower case string.")
+    
+    @pydantic.validator("age", "score")
     @classmethod
-    def isbn_10_valid(cls, value) -> None:
-        """Validator to check whether ISBN10 is valid"""
-        chars = [c for c in value if c in "0123456789Xx"]
-        if len(chars) != 10:
-            raise ISBN10FormatError(value=value, message="ISBN10 should be 10 digits.")
-
-        def char_to_int(char: str) -> int:
-            if char in "Xx":
-                return 10
-            return int(char)
-
-        if sum((10 - i) * char_to_int(x) for i, x in enumerate(chars)) % 11 != 0:
-            raise ISBN10FormatError(
-                value=value, message="ISBN10 digit sum should be divisible by 11."
-            )
-        return value
-
-    class Config:
-        """Pydantic config class"""
-        allow_mutation = False
-        anystr_lower = True
+    def validate_number(cls, value):
+        if value >= 0:
+            return value
+        else:
+            raise ValueError("Numbers must be a integer or float")
 
 
 def main() -> None:
     """ Main function. """
 
     # Read data from a JSON file
-    with open("./data.json") as file:
-        data = json.load(file)
-        books: List[Book] = [Book(**item) for item in data]
-        # print(books)
-        print(books[0])
-        # print(books[0].dict(exclude={"price"}))
-        # print(books[1].copy())
+    with open(current_file) as file:
+        datas = json.load(file)
+        
+        # Check and parse the given JSON data.
+        try:
+            books: List[Book] = [User(**item) for item in datas]
+        except:
+            print("-"*50)
+            print("Try Again...")
+            print("-"*50)
 
 
 if __name__ == "__main__":
-    #ain()
+    main()
     
     print("-"*50)
     print("File Executed...")
