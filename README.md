@@ -8,6 +8,8 @@ python main.py
 ## Roadmap for testing.
 - [x] Base Functions.
 - [x] Second base functions.
+- [x] Check to Pandas then export to CSV.
+- [ ] Create basic analysis.
 - [ ] Develop and test the main function and the data.
 ## Acknowledgment
 

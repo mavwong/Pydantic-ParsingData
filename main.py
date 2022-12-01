@@ -1,6 +1,7 @@
 import string
 import json
 import pydantic
+import pandas as pd
 
 from typing import List, Optional
 from pathlib import Path
@@ -8,6 +9,10 @@ from pathlib import Path
 # Existing Path
 path_cwd = Path.cwd()
 path_data = path_cwd / "data"
+path_output = path_cwd / "output"
+
+# Output File
+file_output = path_output / "users.csv"
 
 # Existing Files
 file_json_a = path_data / "data.json"
@@ -17,14 +22,12 @@ file_json_c = path_data / "test_data_0002.json"
 # Current file to be tested
 current_file = file_json_b
 
-class User(pydantic.BaseModel):
+class ValidateUser(pydantic.BaseModel):
     username: str
     password: str
+    gender: str
     age: int
-    score: float
-    
-    email: Optional[str]
-    phone_number: Optional[str]
+    birthday: str
     
     @pydantic.validator("username")
     @classmethod
@@ -45,14 +48,6 @@ class User(pydantic.BaseModel):
                     if any(u in value for u in string.ascii_uppercase):
                         return value
         raise ValueError("Password needs at least one punctuation symbol, digit, upper and lower case string.")
-    
-    @pydantic.validator("age", "score")
-    @classmethod
-    def validate_number(cls, value):
-        if value >= 0:
-            return value
-        else:
-            raise ValueError("Numbers must be a integer or float")
 
 
 def main() -> None:
@@ -62,14 +57,17 @@ def main() -> None:
     with open(current_file) as file:
         datas = json.load(file)
         
-        # Check and parse the given JSON data.
+        #Check and parse the given JSON data.
         try:
             Book = dict()
-            books: List[Book] = [User(**item) for item in datas]
+            users: List[Book] = [ValidateUser(**item) for item in datas]
         except:
             print("-"*50)
             print("Try Again...")
             print("-"*50)
+        else:
+            df_users = pd.DataFrame.from_dict(datas)
+            df_users.to_csv(file_output, index=True)
 
 
 if __name__ == "__main__":
