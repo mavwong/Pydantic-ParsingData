@@ -3,9 +3,18 @@ Testing repository - test parsing datas in Pydantic.
 
 ## Getting Started
 ### Installation Requirement
+Install the packages using the pip.
+```shell
+pip install -r requirements.txt
+```
 ### Deployment
 ```shell
 python main.py
+```
+### Tensorboard
+We can analyze the project using the tensorboard application.
+```shell
+tensorboard --logdir runs
 ```
 
 ## Roadmap for testing.
