@@ -22,6 +22,7 @@ file_json_c = path_data / "test_data_0002.json"
 # Current file to be tested
 current_file = file_json_b
 
+# Validation Class
 class ValidateUser(pydantic.BaseModel):
     username: str
     password: str
