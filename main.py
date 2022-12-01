@@ -64,6 +64,7 @@ def main() -> None:
         
         # Check and parse the given JSON data.
         try:
+            Book = dict()
             books: List[Book] = [User(**item) for item in datas]
         except:
             print("-"*50)

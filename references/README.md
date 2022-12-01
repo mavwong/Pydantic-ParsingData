@@ -20,7 +20,8 @@ tensorboard --logdir runs
 ## Roadmap for testing.
 
 - [x] Base Functions.
-- [ ] Test with other datas.
+- [x] Test with other datas.
+- [ ] Test other datas and functions.
 
 ## Acknowledgment
 
