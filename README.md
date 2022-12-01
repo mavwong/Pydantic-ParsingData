@@ -2,7 +2,6 @@
 Testing repository - test parsing datas in Pydantic.
 
 ## Getting Started
-### Installation Requirement
 ### Deployment
 ```shell
 python main.py
